@@ -8,11 +8,6 @@ import { ChangeEvent, useState } from "react";
 export default function Home() {
     const [csvData, setCsvData] = useState<Record<PropertyKey, string>[]>([]);
 
-    const handleDrop = event => {
-        event.preventDefault();
-        console.log("hello world");
-    };
-
     const handleFileChange = async (
         event: ChangeEvent<HTMLInputElement>
     ): Promise<void> => {
@@ -49,7 +44,6 @@ export default function Home() {
             <div>
                 <h1>Bank Statement Parser</h1>
                 <section
-                    onDrop={handleDrop}
                     onDragOver={event => event.preventDefault()}
                     className="flex flex-col items-center justify-center  h-72 w-72 rounded-3xl border-purple-100 border-dashed border-2"
                 >
