@@ -1,22 +1,20 @@
 import dayjs from "dayjs";
 
 export abstract class AbstractStatement<CsvType> {
-    /** Probs need to redo this method, it's pretty hard coded right now
-     * should accept a month and or in general a target set of strings
-     */
-    async getParsedCsvFile(targetMonth: number) {
+    async getParsedCsvFile(month: number): Promise<number> {
         const filteredCsv = this.getShoppingResults();
-        const lastMonth = dayjs()
-            .set("month", dayjs().month() - 1)
-            .month();
+        console.log("filteredCsv:", filteredCsv);
+        const targetMonth = dayjs().set("month", month).month();
+        console.log("targetMonth:", targetMonth);
         const targetMonthResults = this.getTargetMonthResults(
-            lastMonth,
+            targetMonth,
             filteredCsv
         );
 
         const value = this.sumValues(targetMonthResults);
-        console.log("total spent:", `£${value}`);
+        return value;
     }
+
     abstract getShoppingResults(): CsvType[];
 
     abstract getTargetMonthResults(

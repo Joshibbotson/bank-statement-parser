@@ -7,6 +7,7 @@ import { ChangeEvent, useState } from "react";
 
 export default function Home() {
     const [csvData, setCsvData] = useState<Record<PropertyKey, string>[]>([]);
+    const [statementValue, setStatementValue] = useState<number>();
 
     const handleFileChange = async (
         event: ChangeEvent<HTMLInputElement>
@@ -30,13 +31,12 @@ export default function Home() {
     };
 
     const handleClick = async () => {
-        console.log(
-            await StatementFactory.getShoppingResults(
-                csvData,
-                Statements.NATWEST,
-                7
-            )
+        const result = await StatementFactory.getShoppingResults(
+            csvData,
+            Statements.NATWEST,
+            8
         );
+        setStatementValue(result);
     };
 
     return (
@@ -67,6 +67,7 @@ export default function Home() {
                     </span>
                 </section>
                 <button onClick={handleClick}>check monthly spend</button>
+                <h3>Total spent: £{statementValue?.toFixed(2)}</h3>
             </div>
         </main>
     );

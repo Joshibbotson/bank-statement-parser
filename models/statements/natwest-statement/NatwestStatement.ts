@@ -7,16 +7,18 @@ export class NatwestStatement extends AbstractStatement<NatwestStatementCsv> {
     private readonly _formattedCsvData: NatwestStatementCsv[];
     constructor(csvData: Record<PropertyKey, string>[]) {
         super();
-        console.log("csvData:", csvData);
+
         const validCsvType = this.checkCsvMatchesGivenType(csvData);
         if (!validCsvType)
             throw new Error(
                 "Invalid Csv Type, CSV headers do not match chosen Statement type."
             );
-        this._formattedCsvData = csvData as unknown as NatwestStatementCsv[];
+        this._formattedCsvData = this.transformCsvData(csvData);
     }
 
-    checkCsvMatchesGivenType(csvData: Record<PropertyKey, string>[]): boolean {
+    private checkCsvMatchesGivenType(
+        csvData: Record<PropertyKey, string>[]
+    ): boolean {
         console.log("comparing...");
         const csvObject = csvData[0];
         if (
@@ -37,6 +39,24 @@ export class NatwestStatement extends AbstractStatement<NatwestStatementCsv> {
         }
         return true;
     }
+
+    private transformCsvData(
+        csvData: Record<PropertyKey, string>[]
+    ): NatwestStatementCsv[] {
+        return csvData.map(lineObj => {
+            const NatwestStatementLine: NatwestStatementCsv = {
+                Date: dayjs(lineObj["Date"]).toDate(),
+                Type: lineObj["Type"],
+                Description: lineObj["Description"],
+                Value: parseFloat(lineObj["Value"]),
+                Balance: parseFloat(lineObj["Balance"]),
+                "Account Name": lineObj["Account Name"],
+                "Account Number": lineObj["Account Number"],
+            };
+            return NatwestStatementLine;
+        }) as NatwestStatementCsv[];
+    }
+
     getShoppingResults(): NatwestStatementCsv[] {
         const targetShops = [
             "tesco stores",
@@ -44,23 +64,33 @@ export class NatwestStatement extends AbstractStatement<NatwestStatementCsv> {
             "asda",
             "sainsbury's",
         ];
-        return this._formattedCsvData.filter(line =>
+        console.log("_formattedCsvData:", this._formattedCsvData);
+        const filteredData = this._formattedCsvData.filter(line =>
             targetShops.some(shop => {
                 line["Description"].toLowerCase().includes(shop);
             })
         );
+        console.log("filteredData:", filteredData);
+        return filteredData;
     }
 
-    getTargetMonthResults(month: number): NatwestStatementCsv[] {
-        return this._formattedCsvData.filter(line => {
+    getTargetMonthResults(
+        month: number,
+        csvData: NatwestStatementCsv[]
+    ): NatwestStatementCsv[] {
+        console.log("passed in data:", csvData);
+        return csvData.filter(line => {
             const date = dayjs(line["Date"]);
             return month === date.get("month");
         });
     }
 
     sumValues(csvResults: NatwestStatementCsv[]): number {
-        return csvResults.reduce((acc, curr) => {
-            return acc + Number(curr["Value"]);
+        console.log("csvResults:", csvResults);
+        const res = csvResults.reduce((acc, curr) => {
+            return acc + curr["Value"];
         }, 0);
+
+        return res;
     }
 }
