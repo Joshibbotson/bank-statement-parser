@@ -3,15 +3,17 @@
 import { CsvParser } from "@/models/CsvParser";
 import { Statements } from "@/models/statements/enum/Statements.enum";
 import { StatementFactory } from "@/models/statements/StatementFactory";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useRef, useState } from "react";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Button } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
+import CloseIcon from "@mui/icons-material/Close";
 
 export default function Home() {
+    const fileInputRef = useRef<HTMLInputElement>(null);
     const [file, setFile] = useState<File>();
     const [csvData, setCsvData] = useState<Record<PropertyKey, string>[]>([]);
     const [statementValue, setStatementValue] = useState<number>();
@@ -42,6 +44,14 @@ export default function Home() {
         console.timeEnd("parse");
     };
 
+    const handleRemoveFile = () => {
+        setFile(undefined);
+        setCsvData([]);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
+    };
+
     const handleDateChange = (newDate: Dayjs | null) => {
         if (newDate !== null) {
             setSelectedDate(newDate);
@@ -53,7 +63,7 @@ export default function Home() {
         const result = await StatementFactory.getShoppingResults(
             csvData,
             Statements.NATWEST,
-            selectedDate?.month()
+            selectedDate
         );
         console.timeEnd("result");
         setStatementValue(result);
@@ -83,6 +93,7 @@ export default function Home() {
                         <input
                             id="browse"
                             type="file"
+                            ref={fileInputRef}
                             hidden
                             accept=".csv"
                             onChange={handleFileChange}
@@ -90,7 +101,7 @@ export default function Home() {
                     </span>
                     {file ? (
                         <div>
-                            {file.name} <button>X</button>
+                            {file.name} <CloseIcon onClick={handleRemoveFile} />
                         </div>
                     ) : (
                         <div>no file selected</div>
