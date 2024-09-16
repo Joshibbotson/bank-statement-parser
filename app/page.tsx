@@ -4,11 +4,18 @@ import { CsvParser } from "@/models/CsvParser";
 import { Statements } from "@/models/statements/enum/Statements.enum";
 import { StatementFactory } from "@/models/statements/StatementFactory";
 import { ChangeEvent, useState } from "react";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { Button } from "@mui/material";
+import dayjs, { Dayjs } from "dayjs";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
 
 export default function Home() {
     const [file, setFile] = useState<File>();
     const [csvData, setCsvData] = useState<Record<PropertyKey, string>[]>([]);
     const [statementValue, setStatementValue] = useState<number>();
+    const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
 
     const handleFileChange = async (
         event: ChangeEvent<HTMLInputElement>
@@ -35,12 +42,18 @@ export default function Home() {
         console.timeEnd("parse");
     };
 
+    const handleDateChange = (newDate: Dayjs | null) => {
+        if (newDate !== null) {
+            setSelectedDate(newDate);
+        }
+    };
+
     const handleClick = async () => {
         console.time("result");
         const result = await StatementFactory.getShoppingResults(
             csvData,
             Statements.NATWEST,
-            8
+            selectedDate?.month()
         );
         console.timeEnd("result");
         setStatementValue(result);
@@ -48,12 +61,15 @@ export default function Home() {
 
     return (
         <main className="flex flex-col items-center justify-center w-full h-screen">
-            <div>
-                <h1>Bank Statement Parser</h1>
+            <div className="flex flex-col items-center justify-center w-full p-10">
+                <h1 className="text-center text text-3xl	">
+                    Bank Statement Parser
+                </h1>
                 <section
                     onDragOver={event => event.preventDefault()}
-                    className="flex flex-col items-center justify-center  h-72 w-72 rounded-3xl border-purple-100 border-dashed border-2"
+                    className="flex flex-col items-center justify-center h-72 w-full rounded-3xl border-purple-100 border-dashed border-2 md:max-w-lg"
                 >
+                    <FileUploadIcon />
                     <h1> Drag & drop CSV here</h1>
                     <span>
                         or{" "}
@@ -73,12 +89,66 @@ export default function Home() {
                         />
                     </span>
                     {file ? (
-                        <div>{file.name}</div>
+                        <div>
+                            {file.name} <button>X</button>
+                        </div>
                     ) : (
                         <div>no file selected</div>
                     )}
                 </section>
-                <button onClick={handleClick}>check monthly spend</button>
+                <div className="flex flex-col mt-4 gap-3">
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                            defaultValue={dayjs()}
+                            label={"Month and Year "}
+                            views={["month", "year"]}
+                            onChange={handleDateChange}
+                            sx={{
+                                "& .MuiOutlinedInput-root": {
+                                    "& fieldset": {
+                                        borderColor: "white",
+                                    },
+                                    "&:hover fieldset": {
+                                        borderColor: "blue",
+                                    },
+                                    "&.Mui-focused fieldset": {
+                                        borderColor: "white",
+                                    },
+                                },
+                                "& .MuiInputLabel-root": {
+                                    color: "white",
+                                },
+                                "& .MuiInputLabel-root.Mui-focused": {
+                                    color: "white",
+                                },
+                                "& .MuiInputBase-input": {
+                                    color: "white",
+                                },
+                                "& .MuiSvgIcon-root": {
+                                    color: "white",
+                                },
+                            }}
+                        />
+                    </LocalizationProvider>
+                    <Button
+                        sx={{
+                            backgroundColor: !file ? "grey" : "lilac",
+                            color: !file ? "white" : "black",
+                            "&:hover": {
+                                backgroundColor: !file ? "grey" : "white",
+                            },
+                            "&.Mui-disabled": {
+                                backgroundColor: "grey",
+                                color: "white",
+                            },
+                        }}
+                        variant="contained"
+                        onClick={handleClick}
+                        disabled={!file}
+                    >
+                        check monthly spend
+                    </Button>
+                </div>
                 <h3>Total spent: £{statementValue?.toFixed(2)}</h3>
             </div>
         </main>
