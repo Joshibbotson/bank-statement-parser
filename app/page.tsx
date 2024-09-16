@@ -6,6 +6,7 @@ import { StatementFactory } from "@/models/statements/StatementFactory";
 import { ChangeEvent, useState } from "react";
 
 export default function Home() {
+    const [file, setFile] = useState<File>();
     const [csvData, setCsvData] = useState<Record<PropertyKey, string>[]>([]);
     const [statementValue, setStatementValue] = useState<number>();
 
@@ -15,27 +16,33 @@ export default function Home() {
         const file = event.target.files?.[0];
         console.log(file);
         if (file) {
+            setFile(file);
             await handleFile(file);
         }
     };
 
     const handleFile = async (file: File) => {
         const reader = new FileReader();
+        console.time("parse");
         reader.onload = async event => {
             const csvContent = event.target?.result as string;
             const parser = new CsvParser();
             const parsedCsv = await parser.parseCsvContent(csvContent);
             setCsvData(parsedCsv);
         };
+
         reader.readAsText(file);
+        console.timeEnd("parse");
     };
 
     const handleClick = async () => {
+        console.time("result");
         const result = await StatementFactory.getShoppingResults(
             csvData,
             Statements.NATWEST,
             8
         );
+        console.timeEnd("result");
         setStatementValue(result);
     };
 
@@ -65,6 +72,11 @@ export default function Home() {
                             onChange={handleFileChange}
                         />
                     </span>
+                    {file ? (
+                        <div>{file.name}</div>
+                    ) : (
+                        <div>no file selected</div>
+                    )}
                 </section>
                 <button onClick={handleClick}>check monthly spend</button>
                 <h3>Total spent: £{statementValue?.toFixed(2)}</h3>

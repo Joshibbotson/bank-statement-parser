@@ -61,17 +61,15 @@ export class NatwestStatement extends AbstractStatement<NatwestStatementCsv> {
         const targetShops = [
             "tesco stores",
             "morrisons",
-            "asda",
+            "asda stores",
             "sainsbury's",
         ];
         console.log("_formattedCsvData:", this._formattedCsvData);
-        const filteredData = this._formattedCsvData.filter(line =>
-            targetShops.some(shop => {
-                line["Description"].toLowerCase().includes(shop);
-            })
+        return this._formattedCsvData.filter(line =>
+            targetShops.some(shop =>
+                line["Description"].toLowerCase().includes(shop)
+            )
         );
-        console.log("filteredData:", filteredData);
-        return filteredData;
     }
 
     getTargetMonthResults(
