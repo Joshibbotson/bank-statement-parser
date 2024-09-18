@@ -1,3 +1,3 @@
 export enum Statements {
-    NATWEST,
+    NATWEST = "Natwest",
 }

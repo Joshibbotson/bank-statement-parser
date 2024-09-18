@@ -6,13 +6,14 @@ export class StatementFactory {
     static async getShoppingResults(
         formattedCsvData: Record<PropertyKey, string>[],
         statementType: Statements,
-        selectedDate: Dayjs
+        selectedDate: Dayjs,
+        tags?: string[]
     ) {
         if (!formattedCsvData) {
             throw new Error("no formatted data");
         }
         const statement = this.factory(formattedCsvData, statementType);
-        return await statement.getParsedCsvFile(selectedDate);
+        return await statement.getParsedCsvFile(selectedDate, tags);
     }
 
     static factory(

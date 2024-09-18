@@ -11,7 +11,8 @@ import { Button } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import CloseIcon from "@mui/icons-material/Close";
-import { Tags } from "@/components/tags";
+import { Tag, Tags } from "@/components/tags";
+import StatementType from "@/components/statementType";
 
 export default function Home() {
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -19,12 +20,12 @@ export default function Home() {
     const [csvData, setCsvData] = useState<Record<PropertyKey, string>[]>([]);
     const [statementValue, setStatementValue] = useState<number>();
     const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
-    const [error, setError] = useState<string>("");
+    const [error, setError] = useState<string | undefined>();
     const [isDragging, setIsDragging] = useState<boolean>(false);
-    const [tags, setTags] = useState<string[]>([]);
+    const [tags, setTags] = useState<Tag[]>([]);
 
-    const handleTagsUpdate = (updatedTags: string[]) => {
-        setTags(updatedTags); // Receive tags from the child
+    const handleTagsUpdate = (updatedTags: Tag[]) => {
+        setTags(updatedTags);
     };
 
     const handleFileChange = async (
@@ -32,9 +33,9 @@ export default function Home() {
     ): Promise<void> => {
         const file = event.target.files?.[0];
         console.log(file);
+        setError(undefined);
 
         if (file && file.type === "text/csv") {
-            setFile(file);
             await handleFile(file);
         } else if (file?.type !== "text/csv") {
             setError(
@@ -67,11 +68,14 @@ export default function Home() {
     const onDropFile = (event: React.DragEvent<HTMLDivElement>) => {
         event.preventDefault();
         const droppedFile = event.dataTransfer.files?.[0];
+        setError(undefined);
         if (droppedFile && droppedFile.type === "text/csv") {
             setFile(droppedFile);
             handleFile(droppedFile);
         } else {
-            setError("Incorrect file type, please select a CSV file.");
+            setError(
+                "Incorrect file type selected, please select a bank statement CSV file"
+            );
         }
         setIsDragging(false);
     };
@@ -96,7 +100,8 @@ export default function Home() {
         const result = await StatementFactory.getShoppingResults(
             csvData,
             Statements.NATWEST,
-            selectedDate
+            selectedDate,
+            tags.length ? tags.map(tag => tag.description) : undefined
         );
         console.timeEnd("result");
         setStatementValue(result);
@@ -161,6 +166,7 @@ export default function Home() {
                     )}
                 </section>
                 <div className="flex flex-col mt-4 gap-3">
+                    {/* <StatementType /> */}
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
                             defaultValue={dayjs()}
