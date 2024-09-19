@@ -165,7 +165,7 @@ export default function Home() {
                             </>
                         )}
                     </section>
-                    <div className="flex mt-4 gap-3">
+                    <div className="flex flex-col md:flex-row mt-4 gap-3">
                         <div className="flex flex-col gap-3">
                             {/* <StatementType /> */}
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
