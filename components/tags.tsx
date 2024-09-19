@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { TextField } from "@mui/material";
@@ -12,12 +14,21 @@ export interface TagsProps {
 
 export const Tags = ({ onTagsChange }: TagsProps) => {
     const [tags, setTags] = useState<Tag[]>([]);
-    const colourOptions = ["bg-purple-300", "bg-purple-400", "bg-purple-500"];
+    const [error, setError] = useState<string>("");
 
+    const colourOptions = ["bg-purple-300", "bg-purple-400", "bg-purple-500"];
+    const containsDuplicate = (word: string): boolean => {
+        return tags.some(tag => tag.description === word);
+    };
     const handleAddTag = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        const description = (event.target as HTMLInputElement).value;
         if (event.key === "Enter") {
+            if (containsDuplicate(description)) {
+                setError("Tag already exists");
+                return;
+            }
             const newTag: Tag = {
-                description: (event.target as HTMLInputElement).value,
+                description,
                 colour: colourOptions[
                     Math.floor(Math.random() * colourOptions.length)
                 ],
@@ -25,6 +36,7 @@ export const Tags = ({ onTagsChange }: TagsProps) => {
             const updatedTags = [...tags, newTag];
             setTags(updatedTags);
             onTagsChange(updatedTags);
+            setError(""); // Clear error if valid
             (event.target as HTMLInputElement).value = "";
         }
     };
@@ -45,7 +57,7 @@ export const Tags = ({ onTagsChange }: TagsProps) => {
                 <p>{tag.description}</p>
                 <CloseIcon
                     onClick={() => handleRemoveTag(i)}
-                    className=" text-base text-white cursor-pointer hover:text-red-300"
+                    className="text-base text-white cursor-pointer hover:text-red-300"
                 />
             </div>
         );
@@ -84,8 +96,13 @@ export const Tags = ({ onTagsChange }: TagsProps) => {
                 onKeyDown={handleAddTag}
                 placeholder="Add key words to check"
             />
+            <p className="text-red-700">{error}</p>
 
-            <div className=" flex flex-wrap items-center justify-center  gap-1  max-w-72 h-auto">
+            <div
+                className={`overflow-auto flex flex-wrap items-center justify-center gap-1 max-w-72 ${
+                    tags.length > 0 ? "max-h-64" : "max-h-10"
+                }`}
+            >
                 {tags.map((tag, i) => createTag(tag, i))}
             </div>
         </>

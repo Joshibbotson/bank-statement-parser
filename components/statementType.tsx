@@ -1,3 +1,5 @@
+"use client";
+
 import { Statements } from "@/models/statements/enum/Statements.enum";
 import {
     FormControl,

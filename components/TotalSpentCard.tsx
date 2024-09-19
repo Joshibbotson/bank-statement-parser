@@ -1,3 +1,4 @@
+"use client";
 import { Tooltip } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
 import { Dayjs } from "dayjs";
