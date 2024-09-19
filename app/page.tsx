@@ -12,7 +12,8 @@ import dayjs, { Dayjs } from "dayjs";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import CloseIcon from "@mui/icons-material/Close";
 import { Tag, Tags } from "@/components/tags";
-import StatementType from "@/components/statementType";
+import Nav from "@/components/Nav";
+import TotalSpentCard from "@/components/TotalSpentCard";
 
 export default function Home() {
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -34,9 +35,9 @@ export default function Home() {
         const file = event.target.files?.[0];
         console.log(file);
         setError(undefined);
-
         if (file && file.type === "text/csv") {
-            await handleFile(file);
+            setFile(file);
+            handleFile(file);
         } else if (file?.type !== "text/csv") {
             setError(
                 "Incorrect file type selected, please select a bank statement CSV file"
@@ -108,121 +109,129 @@ export default function Home() {
     };
 
     return (
-        <main className="flex flex-col items-center justify-center w-full h-screen">
-            <div className="flex flex-col items-center justify-center w-full p-10">
-                <h1 className="text-center text text-3xl	">
-                    Bank Statement Parser
-                </h1>
-                <section
-                    onDragOver={handleDragOver}
-                    onDragLeave={handleDragLeave}
-                    onDrop={onDropFile}
-                    className={`flex flex-col items-center justify-center h-72
-                       w-full rounded-3xl border-dashed border-2 md:max-w-lg ${
+        <>
+            <Nav />
+            <main className="flex flex-col items-center justify-center w-full h-screen">
+                <div className="flex flex-col items-center justify-center w-full p-10">
+                    <section
+                        onDragOver={handleDragOver}
+                        onDragLeave={handleDragLeave}
+                        onDrop={onDropFile}
+                        className={`flex flex-col items-center justify-center h-96
+                       w-full rounded-3xl border-dashed border-2 md:max-w-5xl  ${
                            isDragging
                                ? "border-purple-300 border-solid bg-gray-700"
                                : "border-purple-100"
                        }`}
-                >
-                    {isDragging ? (
-                        <FileUploadIcon className="text-6xl" />
-                    ) : (
-                        <>
-                            <FileUploadIcon className="text-3xl" />
-                            <h1> Drag & drop CSV here</h1>
-                            <span>
-                                or{" "}
-                                <label
-                                    className="text-purple-200 cursor-pointer  hover:underline "
-                                    htmlFor="browse"
-                                >
-                                    browse file
-                                </label>{" "}
-                                from device
-                                <input
-                                    id="browse"
-                                    type="file"
-                                    ref={fileInputRef}
-                                    hidden
-                                    accept=".csv"
-                                    onChange={handleFileChange}
-                                />
-                            </span>
-                            {file ? (
-                                <div>
-                                    {file.name}{" "}
-                                    <CloseIcon
-                                        className="text-red-500 cursor-pointer hover:text-red-300"
-                                        onClick={handleRemoveFile}
-                                    />
-                                </div>
-                            ) : (
-                                <div>no file selected</div>
-                            )}
-                            {error ? (
-                                <p className="text-red-500">{error}</p>
-                            ) : null}
-                        </>
-                    )}
-                </section>
-                <div className="flex flex-col mt-4 gap-3">
-                    {/* <StatementType /> */}
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DatePicker
-                            defaultValue={dayjs()}
-                            label={"Month and Year "}
-                            views={["month", "year"]}
-                            onChange={handleDateChange}
-                            sx={{
-                                "& .MuiOutlinedInput-root": {
-                                    "& fieldset": {
-                                        borderColor: "white",
-                                    },
-                                    "&:hover fieldset": {
-                                        borderColor: "blue",
-                                    },
-                                    "&.Mui-focused fieldset": {
-                                        borderColor: "white",
-                                    },
-                                },
-                                "& .MuiInputLabel-root": {
-                                    color: "white",
-                                },
-                                "& .MuiInputLabel-root.Mui-focused": {
-                                    color: "white",
-                                },
-                                "& .MuiInputBase-input": {
-                                    color: "white",
-                                },
-                                "& .MuiSvgIcon-root": {
-                                    color: "white",
-                                },
-                            }}
-                        />
-                    </LocalizationProvider>
-                    <Tags onTagsChange={handleTagsUpdate} />
-
-                    <Button
-                        sx={{
-                            backgroundColor: !file ? "grey" : "lilac",
-                            color: !file ? "white" : "black",
-                            "&:hover": {
-                                backgroundColor: !file ? "grey" : "white",
-                            },
-                            "&.Mui-disabled": {
-                                backgroundColor: "grey",
-                                color: "white",
-                            },
-                        }}
-                        variant="contained"
-                        onClick={handleClick}
-                        disabled={!file}
                     >
-                        check monthly spend
-                    </Button>
+                        {isDragging ? (
+                            <FileUploadIcon className="text-6xl" />
+                        ) : (
+                            <>
+                                <FileUploadIcon className="text-3xl" />
+                                <h1> Drag & drop CSV here</h1>
+                                <span>
+                                    or{" "}
+                                    <label
+                                        className="text-purple-200 cursor-pointer  hover:underline "
+                                        htmlFor="browse"
+                                    >
+                                        browse file
+                                    </label>{" "}
+                                    from device
+                                    <input
+                                        id="browse"
+                                        type="file"
+                                        ref={fileInputRef}
+                                        hidden
+                                        accept=".csv"
+                                        onChange={handleFileChange}
+                                    />
+                                </span>
+                                {file ? (
+                                    <div>
+                                        {file.name}{" "}
+                                        <CloseIcon
+                                            className="text-red-500 cursor-pointer hover:text-red-300"
+                                            onClick={handleRemoveFile}
+                                        />
+                                    </div>
+                                ) : (
+                                    <div>no file selected</div>
+                                )}
+                                {error ? (
+                                    <p className="text-red-500">{error}</p>
+                                ) : null}
+                            </>
+                        )}
+                    </section>
+                    <div className="flex mt-4 gap-3">
+                        <div className="flex flex-col gap-3">
+                            {/* <StatementType /> */}
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DatePicker
+                                    defaultValue={dayjs()}
+                                    label={"Month and Year "}
+                                    views={["month", "year"]}
+                                    onChange={handleDateChange}
+                                    sx={{
+                                        "& .MuiOutlinedInput-root": {
+                                            "& fieldset": {
+                                                borderColor: "white",
+                                            },
+                                            "&:hover fieldset": {
+                                                borderColor: "blue",
+                                            },
+                                            "&.Mui-focused fieldset": {
+                                                borderColor: "white",
+                                            },
+                                        },
+                                        "& .MuiInputLabel-root": {
+                                            color: "white",
+                                        },
+                                        "& .MuiInputLabel-root.Mui-focused": {
+                                            color: "white",
+                                        },
+                                        "& .MuiInputBase-input": {
+                                            color: "white",
+                                        },
+                                        "& .MuiSvgIcon-root": {
+                                            color: "white",
+                                        },
+                                    }}
+                                />
+                            </LocalizationProvider>
+                            <Tags onTagsChange={handleTagsUpdate} />
+                        </div>
+                        <div className="flex flex-col gap-6">
+                            <TotalSpentCard
+                                selectedDate={selectedDate}
+                                statementValue={statementValue}
+                            />
+                            <Button
+                                sx={{
+                                    backgroundColor: !file ? "grey" : "lilac",
+                                    color: !file ? "white" : "black",
+                                    "&:hover": {
+                                        backgroundColor: !file
+                                            ? "grey"
+                                            : "white",
+                                    },
+                                    "&.Mui-disabled": {
+                                        backgroundColor: "grey",
+                                        color: "white",
+                                    },
+                                }}
+                                variant="contained"
+                                onClick={handleClick}
+                                disabled={!file}
+                            >
+                                check monthly spend
+                            </Button>
+                        </div>
+                    </div>
                 </div>
-                <h3>Total spent: £{statementValue?.toFixed(2)}</h3>
-            </div>
-        </main>
+            </main>
+        </>
     );
 }
