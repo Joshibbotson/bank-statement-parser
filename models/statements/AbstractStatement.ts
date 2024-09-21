@@ -1,4 +1,4 @@
-import dayjs, { Dayjs } from "dayjs";
+import { Dayjs } from "dayjs";
 
 export abstract class AbstractStatement<CsvType> {
     async getParsedCsvFile(
@@ -6,7 +6,6 @@ export abstract class AbstractStatement<CsvType> {
         tags?: string[]
     ): Promise<number> {
         const filteredCsv = this.getShoppingResults(tags);
-        console.log("filteredCsv:", filteredCsv);
         const targetMonthResults = this.getTargetMonthResults(
             selectedDate.month(),
             filteredCsv

@@ -72,25 +72,25 @@ export const Tags = ({ onTagsChange }: TagsProps) => {
                 sx={{
                     "& .MuiOutlinedInput-root": {
                         "& fieldset": {
-                            borderColor: "white", // White border
+                            borderColor: "white",
                         },
                         "&:hover fieldset": {
-                            borderColor: "white", // White border on hover
+                            borderColor: "white",
                         },
                         "&.Mui-focused fieldset": {
-                            borderColor: "white", // White border when focused
+                            borderColor: "white",
                         },
                         "& input": {
-                            color: "white", // White text color for input
+                            color: "white",
                         },
                     },
                     "& .MuiInputLabel-root": {
-                        color: "white", // White label text
-                        paddingRight: "0.2rem", // Adjust padding for label overlap
+                        color: "white",
+                        paddingRight: "0.2rem",
                         paddingLeft: "0.2rem",
                     },
                     "& .MuiInputLabel-root.Mui-focused": {
-                        color: "white", // White label text when focused
+                        color: "white",
                     },
                 }}
                 onKeyDown={handleAddTag}
@@ -100,7 +100,7 @@ export const Tags = ({ onTagsChange }: TagsProps) => {
 
             <div
                 className={`overflow-auto flex flex-wrap items-center justify-center gap-1 max-w-72 ${
-                    tags.length > 0 ? "max-h-64" : "max-h-10"
+                    tags.length > 0 ? " md:max-h-64 max-h-24" : "max-h-10"
                 }`}
             >
                 {tags.map((tag, i) => createTag(tag, i))}

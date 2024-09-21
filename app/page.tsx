@@ -11,10 +11,10 @@ import { Button } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import CloseIcon from "@mui/icons-material/Close";
-
 import Nav from "@/components/Nav";
 import TotalSpentCard from "@/components/TotalSpentCard";
 import { Tag, Tags } from "@/components/Tags";
+import StatementType from "@/components/StatementType";
 
 export default function Home() {
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -25,16 +25,22 @@ export default function Home() {
     const [error, setError] = useState<string | undefined>();
     const [isDragging, setIsDragging] = useState<boolean>(false);
     const [tags, setTags] = useState<Tag[]>([]);
+    const [selectedStatement, setSelectedStatement] = useState<Statements>(
+        Statements.NATWEST
+    );
 
     const handleTagsUpdate = (updatedTags: Tag[]) => {
         setTags(updatedTags);
+    };
+
+    const handleStatementUpdate = (updatedStatement: Statements) => {
+        setSelectedStatement(updatedStatement);
     };
 
     const handleFileChange = async (
         event: ChangeEvent<HTMLInputElement>
     ): Promise<void> => {
         const file = event.target.files?.[0];
-        console.log(file);
         setError(undefined);
         if (file && file.type === "text/csv") {
             setFile(file);
@@ -56,7 +62,6 @@ export default function Home() {
         };
 
         reader.readAsText(file);
-        console.timeEnd("parse");
     };
 
     const handleRemoveFile = () => {
@@ -98,21 +103,20 @@ export default function Home() {
     };
 
     const handleClick = async () => {
-        console.time("result");
         const result = await StatementFactory.getShoppingResults(
             csvData,
-            Statements.NATWEST,
+            selectedStatement,
             selectedDate,
             tags.length ? tags.map(tag => tag.description) : undefined
         );
-        console.timeEnd("result");
+
         setStatementValue(result);
     };
 
     return (
         <>
             <Nav />
-            <main className="flex flex-col items-center justify-center w-full h-screen">
+            <main className="flex flex-col  justify-center w-full h-full">
                 <div className="flex flex-col items-center justify-center w-full p-10">
                     <section
                         onDragOver={handleDragOver}
@@ -168,7 +172,9 @@ export default function Home() {
                     </section>
                     <div className="flex flex-col md:flex-row mt-4 gap-3">
                         <div className="flex flex-col gap-3">
-                            {/* <StatementType /> */}
+                            <StatementType
+                                onStatementChange={handleStatementUpdate}
+                            />
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DatePicker
                                     defaultValue={dayjs()}

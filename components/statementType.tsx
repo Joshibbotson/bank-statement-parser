@@ -10,17 +10,35 @@ import {
 } from "@mui/material";
 import React from "react";
 
-const StatementType = () => {
-    const statementKeys = Object.keys(Statements);
-    const [statementType, setStatementType] = React.useState("");
+type StatementProps = {
+    onStatementChange(updatedStatement: Statements): void;
+};
+
+const StatementType = ({ onStatementChange }: StatementProps) => {
+    const statementKeys = Object.values(Statements);
+    const [statementType, setStatementType] = React.useState<Statements>(
+        Statements.NATWEST
+    );
 
     const handleChange = (event: SelectChangeEvent) => {
-        setStatementType(event.target.value as string);
+        console.log(statementType);
+        setStatementType(event.target.value as Statements);
+        onStatementChange(event.target.value as Statements);
     };
 
     return (
         <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Bank</InputLabel>
+            <InputLabel
+                id="demo-simple-select-label"
+                sx={{
+                    color: "white",
+                    "&.Mui-focused.MuiInputLabel-root": {
+                        color: "white",
+                    },
+                }}
+            >
+                Bank
+            </InputLabel>
             <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
@@ -42,8 +60,8 @@ const StatementType = () => {
                         fill: "white !important",
                     },
                     "& .MuiFormLabel-root": {
-                        color: "white", // White label text
-                        paddingRight: "0.2rem", // Adjust padding for label overlap
+                        color: "white",
+                        paddingRight: "0.2rem",
                         paddingLeft: "0.2rem",
                     },
                 }}
