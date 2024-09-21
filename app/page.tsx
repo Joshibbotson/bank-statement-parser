@@ -13,8 +13,8 @@ import FileUploadIcon from "@mui/icons-material/FileUpload";
 import CloseIcon from "@mui/icons-material/Close";
 import Nav from "@/components/Nav";
 import TotalSpentCard from "@/components/TotalSpentCard";
-import { Tag, Tags } from "@/components/Tags";
 import StatementType from "@/components/StatementType";
+import { Tag, Tags } from "@/components/Tags";
 
 export default function Home() {
     const fileInputRef = useRef<HTMLInputElement>(null);
