@@ -13,7 +13,7 @@ type CsvTableProps = {
 };
 
 const CsvTable = ({ tableData }: CsvTableProps) => {
-    const [page, setPage] = useState(0); // Start at 0 (zero-indexed for pagination)
+    const [page, setPage] = useState(0);
     const [take, setTake] = useState(10);
 
     const handleChangePage = (
@@ -47,7 +47,9 @@ const CsvTable = ({ tableData }: CsvTableProps) => {
                             .map((line, i) => (
                                 <TableRow key={i}>
                                     {Object.values(line).map((value, j) => (
-                                        <TableCell key={j}>{value}</TableCell>
+                                        <TableCell key={j}>
+                                            {String(value)}
+                                        </TableCell>
                                     ))}
                                 </TableRow>
                             ))}

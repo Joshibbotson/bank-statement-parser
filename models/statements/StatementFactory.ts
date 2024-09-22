@@ -13,7 +13,11 @@ export class StatementFactory {
             throw new Error("no formatted data");
         }
         const statement = this.factory(formattedCsvData, statementType);
-        return await statement.getParsedCsvFile(selectedDate, tags);
+        const { value, targetMonthResults } = await statement.getParsedCsvFile(
+            selectedDate,
+            tags
+        );
+        return { value, targetMonthResults };
     }
 
     static factory(

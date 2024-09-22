@@ -11,7 +11,6 @@ import dayjs, { Dayjs } from "dayjs";
 import Nav from "@/components/Nav";
 import TotalSpentCard from "@/components/TotalSpentCard";
 import StatementType from "@/components/StatementType";
-
 import FileUpload from "@/components/FileUpload";
 import { Tag, Tags } from "@/components/tags/Tags";
 import { defaultTags } from "@/components/tags/defaultTags";
@@ -22,7 +21,9 @@ export default function Home() {
     const [statementValue, setStatementValue] = useState<number>();
     const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
     const [tags, setTags] = useState<Tag[]>(defaultTags);
-
+    const [tableData, setTableData] = useState<Record<PropertyKey, string>[]>(
+        []
+    );
     const [selectedStatement, setSelectedStatement] = useState<Statements>(
         Statements.NATWEST
     );
@@ -37,7 +38,6 @@ export default function Home() {
     const handleCsvDataUpdate = (
         updatedCsvData: Record<PropertyKey, string>[]
     ) => {
-        console.log(updatedCsvData);
         setCsvData(updatedCsvData);
     };
 
@@ -54,8 +54,14 @@ export default function Home() {
             selectedDate,
             tags.length ? tags.map(tag => tag.description) : undefined
         );
-
-        setStatementValue(result);
+        console.log(result.targetMonthResults);
+        setStatementValue(result.value);
+        setTableData(
+            result.targetMonthResults as unknown as Record<
+                PropertyKey,
+                string
+            >[]
+        );
     };
 
     return (
@@ -134,7 +140,10 @@ export default function Home() {
                             </Button>
                         </div>
                     </div>
-                    <CsvTable tableData={csvData} />
+
+                    <CsvTable
+                        tableData={tableData.length ? tableData : csvData}
+                    />
                 </div>
             </main>
         </>

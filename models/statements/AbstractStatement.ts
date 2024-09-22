@@ -4,7 +4,7 @@ export abstract class AbstractStatement<CsvType> {
     async getParsedCsvFile(
         selectedDate: Dayjs,
         tags?: string[]
-    ): Promise<number> {
+    ): Promise<{ value: number; targetMonthResults: CsvType[] }> {
         const filteredCsv = this.getShoppingResults(tags);
         const targetMonthResults = this.getTargetMonthResults(
             selectedDate.month(),
@@ -12,7 +12,7 @@ export abstract class AbstractStatement<CsvType> {
         );
 
         const value = this.sumValues(targetMonthResults);
-        return value;
+        return { value, targetMonthResults };
     }
 
     abstract getShoppingResults(tags?: string[]): CsvType[];
