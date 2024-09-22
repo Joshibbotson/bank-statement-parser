@@ -21,7 +21,6 @@ const StatementType = ({ onStatementChange }: StatementProps) => {
     );
 
     const handleChange = (event: SelectChangeEvent) => {
-        console.log(statementType);
         setStatementType(event.target.value as Statements);
         onStatementChange(event.target.value as Statements);
     };

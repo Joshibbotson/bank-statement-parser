@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { TextField } from "@mui/material";
+import { defaultTags } from "./defaultTags";
 
 export type Tag = {
     description: string;
@@ -13,10 +14,11 @@ export interface TagsProps {
 }
 
 export const Tags = ({ onTagsChange }: TagsProps) => {
-    const [tags, setTags] = useState<Tag[]>([]);
+    const colourOptions = ["bg-purple-300", "bg-purple-400", "bg-purple-500"];
+
+    const [tags, setTags] = useState<Tag[]>(defaultTags);
     const [error, setError] = useState<string>("");
 
-    const colourOptions = ["bg-purple-300", "bg-purple-400", "bg-purple-500"];
     const containsDuplicate = (word: string): boolean => {
         return tags.some(tag => tag.description === word);
     };
@@ -36,7 +38,7 @@ export const Tags = ({ onTagsChange }: TagsProps) => {
             const updatedTags = [...tags, newTag];
             setTags(updatedTags);
             onTagsChange(updatedTags);
-            setError(""); // Clear error if valid
+            setError("");
             (event.target as HTMLInputElement).value = "";
         }
     };

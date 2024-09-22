@@ -58,17 +58,8 @@ export class NatwestStatement extends AbstractStatement<NatwestStatementCsv> {
     }
 
     getShoppingResults(tags?: string[]): NatwestStatementCsv[] {
-        const targetShops = tags || [
-            "tesco stores",
-            "morrisons",
-            "asda stores",
-            "sainsbury's",
-        ];
-        console.log("_formattedCsvData:", this._formattedCsvData);
         return this._formattedCsvData.filter(line =>
-            targetShops.some(shop =>
-                line["Description"].toLowerCase().includes(shop)
-            )
+            tags?.some(shop => line["Description"].toLowerCase().includes(shop))
         );
     }
 
