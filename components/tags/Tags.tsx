@@ -70,7 +70,7 @@ export const Tags = ({ onTagsChange }: TagsProps) => {
             <TextField
                 id="outlined-basic"
                 variant="outlined"
-                label="Tags"
+                label="Search Tags"
                 sx={{
                     "& .MuiOutlinedInput-root": {
                         "& fieldset": {

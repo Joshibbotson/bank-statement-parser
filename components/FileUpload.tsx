@@ -79,7 +79,7 @@ const FileUpload = ({ onCsvDataChange }: FileUploadProps) => {
             onDragLeave={handleDragLeave}
             onDrop={onDropFile}
             className={`flex flex-col items-center justify-center h-96
-                       w-full rounded-3xl border-dashed border-2 md:max-w-5xl  ${
+                       w-full  rounded-3xl border-dashed border-2 md:max-w-xl md:mb-6  ${
                            isDragging
                                ? "border-purple-300 border-solid bg-gray-700"
                                : "border-purple-100"

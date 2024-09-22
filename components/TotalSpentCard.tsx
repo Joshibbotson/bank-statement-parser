@@ -19,7 +19,18 @@ const TotalSpentCard = ({
                 <InfoIcon />
             </Tooltip>
         </span>
-        <h1 className="text-5xl	">£{statementValue?.toFixed(2)}</h1>
+        <h1 className="text-5xl">
+            <select
+                className=" cursor-pointer appearance-none bg-none bg-transparent border-none outline-none Class
+Properties
+content-none  "
+            >
+                <option value={"£"}>£</option>
+                <option value={"$"}>$</option>
+            </select>
+
+            {statementValue?.toFixed(2)}
+        </h1>
     </div>
 );
 

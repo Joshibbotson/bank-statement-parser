@@ -15,6 +15,7 @@ import StatementType from "@/components/StatementType";
 import FileUpload from "@/components/FileUpload";
 import { Tag, Tags } from "@/components/tags/Tags";
 import { defaultTags } from "@/components/tags/defaultTags";
+import CsvTable from "@/components/CsvTable";
 
 export default function Home() {
     const [csvData, setCsvData] = useState<Record<PropertyKey, string>[]>([]);
@@ -36,6 +37,7 @@ export default function Home() {
     const handleCsvDataUpdate = (
         updatedCsvData: Record<PropertyKey, string>[]
     ) => {
+        console.log(updatedCsvData);
         setCsvData(updatedCsvData);
     };
 
@@ -62,7 +64,8 @@ export default function Home() {
             <main className="flex flex-col  justify-center w-full h-full">
                 <div className="flex flex-col items-center justify-center w-full p-10">
                     <FileUpload onCsvDataChange={handleCsvDataUpdate} />
-                    <div className="flex flex-col md:flex-row mt-4 gap-3">
+
+                    <div className="flex flex-col md:flex-row mt-4 gap-3 mb-10">
                         <div className="flex flex-col gap-3">
                             <StatementType
                                 onStatementChange={handleStatementUpdate}
@@ -131,6 +134,7 @@ export default function Home() {
                             </Button>
                         </div>
                     </div>
+                    <CsvTable tableData={csvData} />
                 </div>
             </main>
         </>
