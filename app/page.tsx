@@ -54,7 +54,6 @@ export default function Home() {
             selectedDate,
             tags.length ? tags.map(tag => tag.description) : undefined
         );
-        console.log(result.targetMonthResults);
         setStatementValue(result.value);
         setTableData(
             result.targetMonthResults as unknown as Record<
@@ -141,9 +140,9 @@ export default function Home() {
                         </div>
                     </div>
 
-                    <CsvTable
-                        tableData={tableData.length ? tableData : csvData}
-                    />
+                    <section className="w-full px-10 min-h-96 h-96">
+                        <CsvTable tableData={tableData} />
+                    </section>
                 </div>
             </main>
         </>

@@ -6,7 +6,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { TablePagination } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type CsvTableProps = {
     tableData: Record<PropertyKey, string>[];
@@ -16,6 +16,9 @@ const CsvTable = ({ tableData }: CsvTableProps) => {
     const [page, setPage] = useState(0);
     const [take, setTake] = useState(10);
 
+    useEffect(() => {
+        setPage(0);
+    }, [tableData]);
     const handleChangePage = (
         event: React.MouseEvent<HTMLButtonElement> | null,
         newPage: number
@@ -32,30 +35,6 @@ const CsvTable = ({ tableData }: CsvTableProps) => {
 
     return tableData.length ? (
         <>
-            <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                    <TableHead>
-                        <TableRow>
-                            {Object.keys(tableData[0]).map((header, i) => (
-                                <TableCell key={i}>{header}</TableCell>
-                            ))}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {[...tableData]
-                            .slice(page * take, page * take + take)
-                            .map((line, i) => (
-                                <TableRow key={i}>
-                                    {Object.values(line).map((value, j) => (
-                                        <TableCell key={j}>
-                                            {String(value)}
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
-                            ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
             <TablePagination
                 component="div"
                 count={tableData.length}
@@ -65,6 +44,41 @@ const CsvTable = ({ tableData }: CsvTableProps) => {
                 onRowsPerPageChange={handleChangeRowsPerPage}
                 sx={{ color: "white" }}
             />
+            <TableContainer component={Paper}>
+                <Table
+                    sx={{
+                        minWidth: 650,
+                        backgroundColor: "black",
+                    }}
+                    aria-label="simple table"
+                >
+                    <TableHead>
+                        <TableRow>
+                            {Object.keys(tableData[0]).map((header, i) => (
+                                <TableCell sx={{ color: "white" }} key={i}>
+                                    {header}
+                                </TableCell>
+                            ))}
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {[...tableData]
+                            .slice(page * take, page * take + take)
+                            .map((line, i) => (
+                                <TableRow key={i}>
+                                    {Object.values(line).map((value, j) => (
+                                        <TableCell
+                                            sx={{ color: "white" }}
+                                            key={j}
+                                        >
+                                            {String(value)}
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
         </>
     ) : null;
 };
